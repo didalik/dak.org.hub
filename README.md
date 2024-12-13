@@ -34,4 +34,4 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 
 ### Getting paid for setting up a QA hub
 
-### Getting paid for usage
+### Getting paid for QA hub usage
