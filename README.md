@@ -22,7 +22,7 @@ cd dak.org.hub
 bin/setup qahub # or devhub or tophub
 ```
 
-This will create the `qahub` and `tester` accounts on your hub. These are regular accounts, unable to run `sudo`. This will also create another, temporary, regular account called `relay`. This account effectively passes your IP address to one of our existing top hubs and gets deleted right after.
+This creates the `qahub` and `tester` accounts on your hub. These are regular accounts, unable to run `sudo`. This also creates another, temporary, regular account called `relay`. This account effectively passes your IP address to one of our existing top hubs and gets deleted right after.
 
 As soon as our top hub gets your IP address, it connects to `qahub` account on your box and completes the setup. The whole thing takes less than a minute to complete.
 
