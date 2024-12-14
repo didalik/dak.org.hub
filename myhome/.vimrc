@@ -13,3 +13,7 @@ set foldmethod=marker
 set mouse-=a
 
 colorscheme default
+
+" See also:
+" - https://github.com/amix/vimrc.git
+""
