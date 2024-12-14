@@ -17,7 +17,8 @@ echo "alik  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/alik
 Please make sure you are a sudoer, then run:
 
 ```
-git clone git@github.com:didalik/dak.org.hub.git
+#git clone git@github.com:didalik/dak.org.hub.git    # read and write
+git clone https://github.com/didalik/dak.org.hub.git # read only
 cd dak.org.hub
 bin/setup qahub # OR devhub <access-token> OR tophub <access-token>
 ```
