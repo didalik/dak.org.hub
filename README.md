@@ -19,7 +19,7 @@ Please make sure you are a sudoer, then run:
 ```
 git clone git@github.com:didalik/dak.org.hub.git
 cd dak.org.hub
-bin/setup qahub # or devhub or tophub
+bin/setup qahub # OR devhub <access-token> OR tophub <access-token>
 ```
 
 This creates the `qahub` and `tester` accounts on your hub. These are regular accounts, unable to run `sudo`. This also creates another, temporary, regular account called `relay`. This account effectively passes your IP address to one of our existing top hubs and gets deleted right after.
@@ -35,3 +35,5 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 ### Getting paid for setting up a QA hub
 
 ### Getting paid for QA hub usage
+
+## How to obtain an [access token](https://www.ionos.com/digitalguide/server/security/oauth/ "TODO implement")
