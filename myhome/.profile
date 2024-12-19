@@ -29,6 +29,7 @@ fi
 # Restart ntp
 #sudo systemctl restart ntp
 # ntpq -p
+vcgencmd measure_temp
 
 . ~/.profile-functions
 

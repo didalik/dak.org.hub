@@ -1,0 +1,6 @@
+# Vim {{{1
+.*.sw?
+*.session
+
+# bin/setup {{{1
+conf/

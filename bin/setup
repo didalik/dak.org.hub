@@ -1,0 +1,24 @@
+#!/bin/bash
+
+err () { # {{{1
+  local red=$(git config --get-color color.diff.whitespace "red")
+  local reset=$(git config --get-color "" "reset")
+  echo "${red}$@${reset}" >&2
+}
+
+tpl () { # apply templates # {{{1
+  err $1
+  [ -d "$1" ] && { 
+    cd $1
+    for f in *; do
+      tpl $f
+    done
+    return
+  }
+  envsubst < $f > $f.out; mv $f.out $f
+  cat $f
+}
+
+rm -rf conf; mkdir conf; cp -a tpl/* conf
+. $HOME/.ssh/.$HOSTNAME.env
+tpl conf/myroot

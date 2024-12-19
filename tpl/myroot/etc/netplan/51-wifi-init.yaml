@@ -1,0 +1,11 @@
+network:
+    version: 2
+    wifis:
+        renderer: networkd
+        wlan0:
+            access-points:
+                $WIFINAME:
+                    password: $WIFIPASSWD
+            dhcp4: true
+            optional: true
+
