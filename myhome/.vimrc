@@ -14,6 +14,14 @@ set mouse-=a
 
 colorscheme default
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git etc. anyway...
+set nobackup
+set nowb
+set noswapfile
+
 " See also:
 " - https://github.com/amix/vimrc.git
 ""
