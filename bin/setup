@@ -30,7 +30,9 @@ tpl () { # apply templates # {{{1
     done
     return
   }
-  envsubst '$WIFINAME $WIFIPASSWD' < $f > $f.out; mv $f.out $f
+  envsubst '$WIFINAME $WIFIPASSWD' < $f > $f.out; mv $f.out $f # see also:
+  # - https://superuser.com/questions/1148950/what-is-shell-format-in-envsubst
+  ##
   cat $f
 }
 
