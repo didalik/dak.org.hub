@@ -6,12 +6,19 @@ conf () { # setup conf/$dir {{{1
   cp -a tpl/$dir/* conf/$dir
   tpl conf/$dir
   cd $wd
+  [ "$dir" = 'myroot' ] && fix_permissions
 }
 
 err () { # {{{1
   local red=$(git config --get-color color.diff.whitespace "red")
   local reset=$(git config --get-color "" "reset")
   echo "${red}$@${reset}" >&2
+}
+
+fix_permissions () { # {{{1
+  sudo chown -R root:root conf/myroot
+  sudo chmod -R 755 conf/myroot
+  sudo chmod 600 conf/myroot/etc/netplan/*.yaml
 }
 
 tpl () { # apply templates # {{{1
@@ -30,11 +37,11 @@ tpl () { # apply templates # {{{1
 # }}}1
 
 . $HOME/.ssh/.$HOSTNAME.env
-rm -rf conf
+sudo rm -rf conf
 shopt -s dotglob  # Enable hidden file expansion
 conf myhome
 conf myroot
 
-rm -rf test; mkdir -p test/{home,root}
-cp -a conf/myhome/* test/home
-cp -a conf/myroot/* test/root
+#rm -rf test; mkdir -p test/{home,root}
+cp -a conf/myhome/* $HOME  # test/home
+sudo cp -a conf/myroot/* / # test/root
