@@ -42,6 +42,6 @@ shopt -s dotglob  # Enable hidden file expansion
 conf myhome
 conf myroot
 
-#rm -rf test; mkdir -p test/{home,root}
+#rm -rf test;mkdir -p test/{home,root}
 cp -a conf/myhome/* $HOME  # test/home
 sudo cp -a conf/myroot/* / # test/root
