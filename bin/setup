@@ -30,7 +30,7 @@ tpl () { # apply templates # {{{1
     done
     return
   }
-  envsubst < $f > $f.out; mv $f.out $f
+  envsubst '$WIFINAME $WIFIPASSWD' < $f > $f.out; mv $f.out $f
   cat $f
 }
 
