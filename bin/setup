@@ -1,5 +1,13 @@
 #!/bin/bash
 
+conf () { # setup conf/$dir {{{1
+  local dir=$1 wd=$PWD
+  mkdir -p conf/$dir
+  cp -a tpl/$dir/* conf/$dir
+  tpl conf/$dir
+  cd $wd
+}
+
 err () { # {{{1
   local red=$(git config --get-color color.diff.whitespace "red")
   local reset=$(git config --get-color "" "reset")
@@ -19,6 +27,14 @@ tpl () { # apply templates # {{{1
   cat $f
 }
 
-rm -rf conf; mkdir conf; cp -a tpl/* conf
+# }}}1
+
 . $HOME/.ssh/.$HOSTNAME.env
-tpl conf/myroot
+rm -rf conf
+shopt -s dotglob  # Enable hidden file expansion
+conf myhome
+conf myroot
+
+rm -rf test; mkdir -p test/{home,root}
+cp -a conf/myhome/* test/home
+cp -a conf/myroot/* test/root
