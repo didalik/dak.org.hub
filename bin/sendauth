@@ -1,0 +1,37 @@
+#!/bin/bash
+
+err () { # {{{1
+  local red=$(git config --get-color color.diff.whitespace "red")
+  local reset=$(git config --get-color "" "reset")
+  echo "${red}$@${reset}" >&2
+}
+
+request () { # account {{{1
+  local account=$1
+  err "- request $account"
+  node --version
+}
+
+validate_args () { # authorization {{{1
+  err "+ $0 started on $(date) with $# args: $@"
+  local auth=$1 account=$2
+  case $auth in
+    request)
+      case $account in
+        devhub|tophub) request $account;;
+        *) return 2
+      esac;;
+    approval)
+      ;;
+    access)
+      ;;
+    *) return 1
+  esac
+}
+
+# }}}1
+
+# Run it here
+# :!clear;bin/sendauth request tophub
+##
+validate_args $@ || exit
