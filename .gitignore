@@ -5,3 +5,7 @@
 # bin/setup {{{1
 conf/
 test/
+
+# Node {{{1
+node_modules/
+
