@@ -1,0 +1,7 @@
+[submodule "dak/util/meta"]
+	path = dak/util/meta
+  url = ssh://alik@w10:/home/alik/people/didalik/dak/util/meta
+
+# See also:
+# - https://www.geeksforgeeks.org/how-to-clone-git-repositories-including-submodules/
+##
