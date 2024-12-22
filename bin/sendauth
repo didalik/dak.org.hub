@@ -8,9 +8,10 @@ err () { # {{{1
 
 request () { # account {{{1
   local account=$1
-  err "- request $account"
-  node --version
-  dak/util/meta/bin/sendauth request $account
+  local cmd="request $account"
+  err "- $cmd"
+  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
+  ssh $AUTH_ACCOUNT "$cmd" # TODO use CFW instead
 }
 
 validate_args () { # authorization {{{1
@@ -35,4 +36,5 @@ validate_args () { # authorization {{{1
 # Run it here
 # :!clear;bin/sendauth request tophub
 ##
+. $HOME/.ssh/.$HOSTNAME.env
 validate_args $@ || exit
