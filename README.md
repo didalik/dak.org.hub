@@ -38,3 +38,5 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 ### Getting paid for QA hub usage
 
 ## How to obtain an [access token](https://www.ionos.com/digitalguide/server/security/oauth/ "TODO implement")
+
+Start with running `bin/install-node` and `npm install`.
