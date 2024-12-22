@@ -10,6 +10,7 @@ request () { # account {{{1
   local account=$1
   err "- request $account"
   node --version
+  dak/util/meta/bin/sendauth request $account
 }
 
 validate_args () { # authorization {{{1
