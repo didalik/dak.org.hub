@@ -42,7 +42,19 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 Start with running `bin/install-node` and `npm install`. Then run
 
 ```
-bin/keys.mjs > $HOME/.ssh/hub.keys
+bin/keys.mjs | tee $HOME/.ssh/hub.keys | \
+  bin/sendauth request tophub | bin/sendauth approval | \
+  bin/sendauth access > $HOME/.ssh/hub.jwt
 ```
 
-to create the secret and public keys for your hub.
+to:
+
+- create and save the secret and public keys for your hub;
+- request approval for the `tophub` support; and
+- get and save your access token to use with
+
+```
+bin/setup tophub < $HOME/.ssh/hub.jwt
+```
+
+That's it.
