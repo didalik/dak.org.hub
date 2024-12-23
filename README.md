@@ -57,4 +57,4 @@ to:
 bin/setup tophub < $HOME/.ssh/hub.jwt
 ```
 
-That's it.
+Period.
