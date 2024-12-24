@@ -8,10 +8,13 @@ err () { # {{{1
 
 request () { # account {{{1
   local account=$1
-  local cmd="request $account"
+  local email=$(git config --get user.email)
+  local name=$(git config --get user.name)
+  local cmd="request $account $email $name"
   err "- $cmd"
   cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
-  ssh $AUTH_ACCOUNT "$cmd" # TODO use CFW instead
+  err "- $cmd"
+  ssh $AUTH_ACCOUNT "$cmd" # TODO https://hx.didalik.workers.dev/sendauth/request
 }
 
 validate_args () { # authorization {{{1
