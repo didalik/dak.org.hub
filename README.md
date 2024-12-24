@@ -44,6 +44,7 @@ Start with running `bin/install-node` and `npm install`. Then run
 ```
 ##
 # FIXME keys are required for approval and access steps only!
+#
 bin/keys.mjs | tee $HOME/.ssh/hub.keys | \
   bin/sendauth request tophub | bin/sendauth approval | \
   bin/sendauth access > $HOME/.ssh/hub.jwt
