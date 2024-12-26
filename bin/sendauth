@@ -10,7 +10,8 @@ request () { # account {{{1
   local account=$1
   local email=$(git config --get user.email)
   local name=$(git config --get user.name)
-  local cmd="request $account $email $name"
+  local hubpk=$(cat $HOME/.ssh/hub.keys|{ read;read;echo $REPLY; })
+  local cmd="request $account $email $hubpk $name"
   err "- $cmd"
   cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
   err "- $cmd"
