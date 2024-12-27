@@ -42,12 +42,8 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 Start with running `bin/install-node` and `npm install`. Then run
 
 ```
-##
-# FIXME keys will be required for approval and access steps only!
-#
-bin/keys.mjs | tee $HOME/.ssh/hub.keys | \
-  bin/sendauth request tophub | bin/sendauth approval | \
-  bin/sendauth access > $HOME/.ssh/hub.jwt
+bin/keys.mjs > $HOME/.ssh/hub.keys
+bin/sendauth request tophub | bin/sendauth approval | bin/sendauth access > $HOME/.ssh/hub.jwt
 ```
 
 to:
