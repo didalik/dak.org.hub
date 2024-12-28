@@ -43,7 +43,7 @@ Start with running `bin/install-node` and `npm install`. Then run
 
 ```
 bin/keys.mjs > $HOME/.ssh/hub.keys
-bin/sendauth request tophub | bin/sendauth approval | bin/jwt > $HOME/.ssh/hub.jwt
+bin/sendauth request tophub | bin/sendauth approval | bin/sendauth access > $HOME/.ssh/hub.jwt
 ```
 
 to:
