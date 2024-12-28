@@ -28,21 +28,12 @@ validate_args () { # authorization {{{1
         *) return 2
       esac;;
     approval)
-      validate_hub;;
+      cat
+      ;;
+    access)
+      ;;
     *) return 1
   esac
-}
-
-validate_hub () { # on approval {{{1
-  IFS=".$IFS"
-  read header payload signature
-  payload="$(echo $payload|base64 -d)"
-  echo -e "- header $header\n- payload $payload\n- signature $signature"
-  local hpk=${payload#*hpk?:?}
-  hpk="${hpk%%?,*}"
-  local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
-  echo -e "- hpk\t$hpk\n- hubpk\t$hubpk"
-  return 3
 }
 
 # }}}1
