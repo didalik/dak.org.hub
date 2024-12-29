@@ -37,24 +37,19 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 
 ### Getting paid for QA hub usage
 
-## How to obtain an [access token](https://www.ionos.com/digitalguide/server/security/oauth/ "TODO implement")
+## How to obtain and use an [access token](https://www.ionos.com/digitalguide/server/security/oauth/ "TODO implement")
 
 Start with running `bin/install-node` and `npm install`. Then run
 
 ```
-bin/keys.mjs > $HOME/.ssh/hub.keys
-bin/sendauth request tophub | bin/sendauth approval | bin/sendauth access > $HOME/.ssh/hub.jwt
+bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ```
 
 to:
 
 - create and save the secret and public keys for your hub;
 - request approval for the `tophub` support; and
-- get and save your access token to use with
-
-```
-bin/setup tophub < $HOME/.ssh/hub.jwt
-```
+- get and use your access token to setup the `tophub` account on your box.
 
 The following sequence diagram has more:
 
@@ -62,8 +57,8 @@ The following sequence diagram has more:
 +---------+                          +-------------------------------------------------+
 | you@hub |                          | https://hx.didalik.workers.dev/sendauth/request |
 +---------+                          +-------------------------------------------------+
-     | request tophub, returns approval JWT                   |
-     |------------------------------------------------------->|
+     | request tophub, returns approval JWT                 |
+     |----------------------------------------------------->|
      |                                                          +----------------------+
      |                                                          | authorization server |
      |                                                          +----------------------+
@@ -72,7 +67,7 @@ The following sequence diagram has more:
      |                                      +---------------+               |
      |                                      | tophub@tophub |               |
      |                                      +---------------+               |
-     | access JWT                                  |                        |
+     | setup tophub using access JWT               |                        |
      |-------------------------------------------->| verify JWT             |
                                                    |----------------------->|
 +------------+      +-----------+                  |
@@ -82,6 +77,6 @@ The following sequence diagram has more:
        |            relay |<-----------------------|
        |<-----------------|                        |
        |                                           |
-       | setup                                     |
-       |------------------------------------------>|
+       |                            complete setup |
+       |<------------------------------------------|
 ```
