@@ -12,9 +12,7 @@ request () { # account {{{1
   local name=$(git config --get user.name)
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   local cmd="request $account $email $hubpk $name"
-  err "- $cmd"
   cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
-  err "- $cmd"
   ssh $AUTH_ACCOUNT "$cmd" # TODO https://hx.didalik.workers.dev/sendauth/request
 }
 
@@ -29,13 +27,17 @@ validate_args () { # authorization {{{1
       esac;;
     approval)
       validate_hub;;
+    access)
+      ;;
     *) return 1
   esac
 }
 
 validate_hub () { # on approval {{{1
+  local ifs="$IFS"
   IFS=".$IFS"
   read header payload64 signature
+  IFS="$ifs"
   local payload="$(echo $payload64|base64 -d)"
   echo -e "- header $header\n- payload $payload\n- signature $signature"
   local hpk=${payload#*hpk?:?}
@@ -54,5 +56,6 @@ validate_hub () { # on approval {{{1
 # Run it here
 # :!clear;bin/sendauth request tophub
 ##
+err "+ HOSTNAME $HOSTNAME"
 . $HOME/.ssh/.$HOSTNAME.env
 validate_args $@ || exit
