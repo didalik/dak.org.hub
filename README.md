@@ -47,7 +47,6 @@ bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 
 to:
 
-- create and save the secret and public keys for your hub;
 - request approval for the `tophub` support; and
 - get and use your access token to setup the `tophub` account on your box.
 
