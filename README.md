@@ -61,21 +61,20 @@ The following sequence diagram has more:
      |                                                          +----------------------+
      |                                                          | authorization server |
      |                                                          +----------------------+
-     | approval JWT, returns access JWT for tophub@tophub                   |
+     | post approval JWT, returns access JWT for tophub@tophub              |
      |--------------------------------------------------------------------->|
-     |                                      +---------------+               |
-     |                                      | tophub@tophub |               |
-     |                                      +---------------+               |
-     | setup tophub using access JWT               |                        |
-     |-------------------------------------------->| verify JWT             |
-                                                   |----------------------->|
-+------------+      +-----------+                  |
-| tophub@hub |      | relay@hub |                  |
-+------------+      +-----------+                  |
-       |                  |                  relay |
-       |            relay |<-----------------------|
-       |<-----------------|                        |
-       |                                           |
+                                                                            |
++-----------+                              +--------------+                 |
+| relay@hub |                              | relay@tophub |                 |
++-----------+                              +--------------+                 |
+       | setup tophub using access JWT             |                        |
+       |------------------------------------------>|                        |
+                                                                            |
++------------+                             +---------------+                |
+| tophub@hub |                             | tophub@tophub |                |
++------------+                             +---------------+                |
+       |                                           | verify access JWT      |
+       |                                           |----------------------->|
        |                            complete setup |
        |<------------------------------------------|
 ```
