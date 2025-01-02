@@ -36,8 +36,9 @@ fi
 # check () { set +m;shopt -s lastpipe;FOUND=false;H='';ps -ef|grep "$1"|{ while read A B C D E F G H T;do [ "$H" = 'tail' ] && FOUND=true;done; };set -m;echo $FOUND;if $FOUND;then return;fi;echo 'not found'; };check 'tail -f /var/log/auth.log'
 # See also:
 # - https://askubuntu.com/questions/1484096/bash-variable-assignment-in-a-pipeline
+#
+#vcgencmd measure_temp
 ###
-vcgencmd measure_temp
 
 . ~/.profile-functions
 

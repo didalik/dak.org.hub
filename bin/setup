@@ -38,6 +38,20 @@ tpl () { # apply templates # {{{1
 
 # }}}1
 
+[ -e $HOME/.ssh/.$HOSTNAME.env ] || {
+	cat << HD
+Please provide the configuration file $HOME/.ssh/.$HOSTNAME.env - for example,
+
+export AUTH_ACCOUNT='alik@u22' # authorization server
+export NODE_BIN="$HOME/.nvm/versions/node/v20.12.2/bin"
+export SENDAUTH="$HOME/dak.org.hub/dak/util/meta/bin/sendauth"
+export WIFINAME='ARRIS-EB02-5G'
+export WIFIPASSWD='427c867e8aaaa223d04b9e704de9c99ed313d609807ecbee6d70a136e386f686'
+
+HD
+	exit
+}
+
 . $HOME/.ssh/.$HOSTNAME.env
 sudo rm -rf conf
 shopt -s dotglob  # Enable hidden file expansion
@@ -47,3 +61,8 @@ conf myroot
 #rm -rf test; mkdir -p test/{home,root}
 cp -a conf/myhome/* $HOME  # test/home
 sudo cp -a conf/myroot/* / # test/root
+
+[ $(which tree) ] || sudo apt  install tree
+tree $HOME -a -I .git -I .*.sw?
+
+. $HOME/.profile
