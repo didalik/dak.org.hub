@@ -1,13 +1,22 @@
 #!/bin/bash
 
-# installs nvm (Node Version Manager)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+export NODE_VERSION='22.11.0' # LTS until 2027
+export NVM_BIN="$HOME/.nvm/versions/node/v$NODE_VERSION/bin"
 
-# download and install Node.js (you may need to restart the terminal)
-nvm install 22
+LOCAL_ENV=$HOME/.ssh/.$HOSTNAME.env
+
+. lib/util.sh
+
+[ -d $NVM_BIN ] || install_node
+
+[ -z "$(envgetkv NVM_BIN)" ] && envputkv NVM_BIN "'$NVM_BIN'"
+#out "- \$(envgetkv NVM_BIN) '$(envgetkv NVM_BIN)'"
+
+PATH="$HOME/.nvm/versions/node/v22.11.0/bin:$PATH"
+out PATH "$PATH"
 
 # verifies the right Node.js version is in the environment
-node -v # should print `v22.12.0`
+node -v # should print `v22.11.0`
 
 # verifies the right npm version is in the environment
 npm -v # should print `10.9.0`
