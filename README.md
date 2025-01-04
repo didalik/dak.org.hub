@@ -40,7 +40,7 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 
 ## How to obtain and use an [access token](https://www.ionos.com/digitalguide/server/security/oauth/ "TODO implement")
 
-Start with running `bin/install-node` and `npm install`. Then run
+Start with running `bin/install-node`. Then run
 
 ```
 bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
