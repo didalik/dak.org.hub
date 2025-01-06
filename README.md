@@ -57,12 +57,12 @@ The following sequence diagram has more:
 +---------+                          +-------------------------------------------------+
 | you@hub |                          | https://hx.didalik.workers.dev/sendauth/request |
 +---------+                          +-------------------------------------------------+
-     | request tophub, returns approval JWT                 |
+     | request tophub - returns approval JWT                |
      |----------------------------------------------------->|
      |                                                          +----------------------+
      |                                                          | authorization server |
      |                                                          +----------------------+
-     | post approval JWT, returns access JWT for tophub@tophub              |
+     | send approval JWT - returns access JWT for tophub@tophub             |
      |--------------------------------------------------------------------->|
                                                                             |
 +-----------+                              +--------------+                 |
