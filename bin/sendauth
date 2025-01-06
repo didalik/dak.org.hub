@@ -6,8 +6,8 @@ request () { # account {{{1
   local name=$(git config --get user.name)
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   local cmd="request $account $email $hubpk $name"
-  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
+  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
+  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
   ssh $AUTH_ACCOUNT "$cmd" # TODO https://hx.didalik.workers.dev/sendauth/request
 }
 
@@ -34,15 +34,16 @@ validate_hub () { # on approval {{{1
   local payload="$(echo $payload64|base64 -d)"
   #echo -e "- header $header\n- payload $payload\n- signature $signature" >&2
   local hpk=${payload#*hpk?:?} asa=${payload#*asa?:?}
-  hpk="${hpk%%?,*}"; asa="${asa%%?,*}"; out '+ validate_hub asa' $asa
+  hpk="${hpk%%?,*}"; asa="${asa%%?,*}"
+  out '+ validate_hub asa' $asa >&2
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   if [ "$hpk" != "$hubpk" ]; then
     printc 'red bold' '+ validate_hub ERROR' hpk "'$hpk'" hubpk "'$hubpk'" >&2
     return 3;
   fi
   local cmd='approval'
-  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
+  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
+  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
   echo "$header.$payload64.$signature" | ssh $asa "$cmd"
 }
 

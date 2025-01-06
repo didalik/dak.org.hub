@@ -33,14 +33,29 @@ tpl () { # apply templates # {{{1
 validate_args () { # {{{1
   out "+ $0 started on $(date) with $# args: $@"
   out "+ PWD $PWD"
-  cat
-  out DONE
-  exit
+
+  if [ "$1" = 'qahub' ]; then
+    TOPHUB_ACCOUNT='alec@m1'
+    TOPHUB_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local'
+    return 0;
+  fi
+  local ifs="$IFS"
+  IFS=".$IFS"
+  read header payload64 signature
+  IFS="$ifs"
+  local payload="$(echo $payload64|base64 -d)"
+  local hpk=${payload#*hpk?:?}
+  TOPHUB_ACCOUNT=${payload#*tha?:?}; TOPHUB_PK=${payload#*thpk?:?}
+  hpk="${hpk%%?,*}"; TOPHUB_ACCOUNT="${TOPHUB_ACCOUNT%%?,*}"; TOPHUB_PK="${TOPHUB_PK%%?,*}"
+
+  local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
+  if [ "$hpk" != "$hubpk" ]; then
+    printc 'red bold' "+ $0 $1 validate_args ERROR hpk '$hpk'" hubpk "'$hubpk'" >&2
+    return 3;
+  fi
 }
 
-# }}}1
-
-[ -e $HOME/.ssh/.$HOSTNAME.env ] || {
+[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # {{{1
 	cat << HD
 Please provide the configuration file $HOME/.ssh/.$HOSTNAME.env - for example,
 
@@ -52,12 +67,20 @@ HD
 	exit
 }
 
-. lib/util.sh
+. lib/util.sh # {{{1
 . $HOME/.ssh/.$HOSTNAME.env
 
 validate_args $@ || exit
+out "+ $0 $1 TOPHUB_ACCOUNT $TOPHUB_ACCOUNT" TOPHUB_PK "'$TOPHUB_PK'"
+[ -e "$HOME/get-docker.sh" ] && out "+ file $HOME/get-docker.sh found" || {
+  out "+ file $HOME/get-docker.sh NOT found, installing Docker Engine..."
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh get-docker.sh
+}
+out DONE
+exit
 
-sudo rm -rf conf
+sudo rm -rf conf # {{{1
 shopt -s dotglob  # Enable hidden file expansion
 conf myhome
 conf myroot
