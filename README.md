@@ -79,3 +79,10 @@ The following sequence diagram has more:
        |                            complete setup |
        |<------------------------------------------|
 ```
+
+## Contributors
+
+```
+# Дід Alik, didalik.aim@gmail.com
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIQ3rb93nHY8SPz9K+sD7o6+KvBjzmxveraFMFbL5Ztg alik@th0host
+```
