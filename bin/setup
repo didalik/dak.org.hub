@@ -72,11 +72,15 @@ HD
 
 validate_args $@ || exit
 out "+ $0 $1 TOPHUB_ACCOUNT $TOPHUB_ACCOUNT" TOPHUB_PK "'$TOPHUB_PK'"
-[ -e "$HOME/get-docker.sh" ] && out "+ file $HOME/get-docker.sh found" || {
+[ -e "$HOME/get-docker.sh" ] && out "+ file $HOME/get-docker.sh found" || { # initialize docker engine
   out "+ file $HOME/get-docker.sh NOT found, installing Docker Engine..."
   curl -fsSL https://get.docker.com -o get-docker.sh
   sudo sh get-docker.sh
 }
+out "+ DOCKER_SWARM_IP_ADDRESS_OF_MANAGER $DOCKER_SWARM_IP_ADDRESS_OF_MANAGER"
+docker swarm init --advertise-addr=$DOCKER_SWARM_IP_ADDRESS_OF_MANAGER # initialize docker swarm as manager
+[ "$(docker network ls|grep hubnet|wc -l)" = 0 ] && docker network create -d overlay hubnet # create network hubnet
+docker network ls
 out DONE
 exit
 
