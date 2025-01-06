@@ -1,23 +1,18 @@
 #!/bin/bash
 
-err () { # {{{1
-  local red=$(git config --get-color color.diff.whitespace "red")
-  local reset=$(git config --get-color "" "reset")
-  echo "${red}$@${reset}" >&2
-}
-
 request () { # account {{{1
   local account=$1
   local email=$(git config --get user.email)
   local name=$(git config --get user.name)
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   local cmd="request $account $email $hubpk $name"
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
+  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
+  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
   ssh $AUTH_ACCOUNT "$cmd" # TODO https://hx.didalik.workers.dev/sendauth/request
 }
 
 validate_args () { # authorization {{{1
-  err "+ $0 started on $(date) with $# args: $@"
+  err "+ $0 started on $(date) with $# args: $@" >&2
   local auth=$1 account=$2
   case $auth in
     request)
@@ -27,8 +22,6 @@ validate_args () { # authorization {{{1
       esac;;
     approval)
       validate_hub;;
-    access)
-      ;;
     *) return 1
   esac
 }
@@ -39,23 +32,23 @@ validate_hub () { # on approval {{{1
   read header payload64 signature
   IFS="$ifs"
   local payload="$(echo $payload64|base64 -d)"
-  echo -e "- header $header\n- payload $payload\n- signature $signature"
-  local hpk=${payload#*hpk?:?}
-  hpk="${hpk%%?,*}"
+  #echo -e "- header $header\n- payload $payload\n- signature $signature" >&2
+  local hpk=${payload#*hpk?:?} asa=${payload#*asa?:?}
+  hpk="${hpk%%?,*}"; asa="${asa%%?,*}"; out '+ validate_hub asa' $asa
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   if [ "$hpk" != "$hubpk" ]; then
+    printc 'red bold' '+ validate_hub ERROR' hpk "'$hpk'" hubpk "'$hubpk'" >&2
     return 3;
   fi
   local cmd='approval'
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd" #  2>/dev/null"
-  echo "$header.$payload64.$signature" | ssh $AUTH_ACCOUNT "$cmd"
+  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
+  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
+  echo "$header.$payload64.$signature" | ssh $asa "$cmd"
 }
 
 # }}}1
 
-# Run it here
-# :!clear;bin/sendauth request tophub
-##
-err "+ HOSTNAME $HOSTNAME"
+. lib/util.sh
 . $HOME/.ssh/.$HOSTNAME.env
+
 validate_args $@ || exit

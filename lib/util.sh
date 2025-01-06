@@ -27,6 +27,10 @@ envsetup () { # {{{1
   done
 }
 
+err () { # {{{1
+  printc 'red dim' $@
+}
+
 install_node () { # {{{1
   cp $HOME/.bashrc $HOME/.bashrc-saved
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -34,8 +38,12 @@ install_node () { # {{{1
 }
 
 out () { # {{{1
-  local color=$(git config --get-color color.diff.whitespace "blue dim")
-  local reset=$(git config --get-color "" "reset")
-  command printf %s\\n "${color}$*${reset}"
+  printc 'blue dim' $@
 }
 
+printc () { # {{{1
+  local color=$(git config --get-color color.diff.whitespace "$1")
+  local reset=$(git config --get-color "" "reset")
+  shift
+  command printf %s\\n "${color}$*${reset}"
+}

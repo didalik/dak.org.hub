@@ -9,12 +9,6 @@ conf () { # setup conf/$dir {{{1
   [ "$dir" = 'myroot' ] && fix_permissions
 }
 
-err () { # {{{1
-  local red=$(git config --get-color color.diff.whitespace "red")
-  local reset=$(git config --get-color "" "reset")
-  echo "${red}$@${reset}" >&2
-}
-
 fix_permissions () { # {{{1
   sudo chown -R root:root conf/myroot
   sudo chmod -R 755 conf/myroot
@@ -36,14 +30,21 @@ tpl () { # apply templates # {{{1
   cat $f
 }
 
+validate_args () { # {{{1
+  out "+ $0 started on $(date) with $# args: $@"
+  out "+ PWD $PWD"
+  cat
+  out DONE
+  exit
+}
+
 # }}}1
 
 [ -e $HOME/.ssh/.$HOSTNAME.env ] || {
 	cat << HD
 Please provide the configuration file $HOME/.ssh/.$HOSTNAME.env - for example,
 
-export AUTH_ACCOUNT='alik@u22' # authorization server
-export SENDAUTH="$HOME/dak.org.hub/dak/util/meta/bin/sendauth"
+export AUTH_ACCOUNT='alik@u22' # authorization server account
 export WIFINAME='ARRIS-EB02-5G'
 export WIFIPASSWD='427c867e8aaaa223d04b9e704de9c99ed313d609807ecbee6d70a136e386f686'
 
@@ -51,7 +52,11 @@ HD
 	exit
 }
 
+. lib/util.sh
 . $HOME/.ssh/.$HOSTNAME.env
+
+validate_args $@ || exit
+
 sudo rm -rf conf
 shopt -s dotglob  # Enable hidden file expansion
 conf myhome
