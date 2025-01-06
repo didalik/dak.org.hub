@@ -83,6 +83,6 @@ The following sequence diagram has more:
 ## Contributors
 
 ```
-# Дід Alik, didalik.aim@gmail.com
+# Дід Alik, didalik.aim@gmail.com, SSH public key:
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIQ3rb93nHY8SPz9K+sD7o6+KvBjzmxveraFMFbL5Ztg alik@th0host
 ```
