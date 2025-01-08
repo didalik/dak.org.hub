@@ -3,6 +3,7 @@
 *.session
 
 # bin/setup {{{1
+build/shared
 conf/
 test/
 
