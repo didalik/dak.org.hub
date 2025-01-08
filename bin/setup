@@ -95,7 +95,12 @@ HD
 	exit
 }
 
-. build/util.sh # validate args, docker install, init, setup {{{1
+## Validate args, docker install, init, setup {{{1
+#
+# Run it here with
+# :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub;tail -F build/shared/out
+##
+. build/util.sh
 . $HOME/.ssh/.$HOSTNAME.env
 validate_args $@ || exit
 out "+ $0 $1 TOPHUB_ACCOUNT $TOPHUB_ACCOUNT" TOPHUB_PK "'$TOPHUB_PK'"
