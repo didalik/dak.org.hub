@@ -49,7 +49,7 @@ validate_hub () { # on approval {{{1
 
 # }}}1
 
-. lib/util.sh
+. build/util.sh
 . $HOME/.ssh/.$HOSTNAME.env
 
 validate_args $@ || exit

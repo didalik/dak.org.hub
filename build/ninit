@@ -1,0 +1,9 @@
+. /root/util.sh
+
+log () {
+  out $@ >> /shared/out
+}
+
+log $(service ssh start)
+read < /shared/host.fifo
+log '+ stopping...'

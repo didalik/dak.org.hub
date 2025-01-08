@@ -5,7 +5,7 @@ export NVM_BIN="$HOME/.nvm/versions/node/v$NODE_VERSION/bin"
 
 LOCAL_ENV=$HOME/.ssh/.$HOSTNAME.env
 
-. lib/util.sh
+. build/util.sh
 
 [ -d $NVM_BIN ] || install_node
 
