@@ -1,9 +1,54 @@
-. /root/util.sh
+#!/bin/bash
+# vim: set filetype=sh {{{1
+#
+# Run it here with
+# :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub;tail -F build/shared/out
+##
 
-log () {
+add_account () { # {{{1
+  local user=$1 userdesc=$2
+  local hu=/home/$user
+  [ -d $hu ] && return
+
+  log "+ add_account $user $userdesc started on $(date), MSG: $MSG"
+  useradd -md $hu -c "$userdesc" -s /bin/bash -k /root/$user -U $user
+  [ -e $hu/.ssh/id_ed25519.base64 ] && rm $hu/.ssh/id_ed25519.base64
+  [ -e $hu/.ssh/id_ed25519 ] || {
+    chmod 755 $hu
+    cd $hu/.ssh
+    sudo -u $user ssh-keygen -t ed25519 -f id_ed25519 -P ''
+    MSG="$MSG\n$(cat id_ed25519.pub)"
+    cd -
+    chmod 750 $hu
+  }
+  chmod 600 $hu/.ssh/id_ed25519
+  chmod 700 $hu/.ssh
+  log "+ add_account exiting, MSG: $MSG"
+}
+
+log () { # to /shared/out {{{1
   out $@ >> /shared/out
 }
 
+relay () { # create account relay, connect to relay@tophub and delete the account {{{1
+  cd /root/relay/.ssh; base64 -d id_ed25519.base64 > id_ed25519; cd ../..
+  add_account relay 'Connects to tophub and dies'
+  ssh-keyscan $kt 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts > /dev/null
+  rm relay/.ssh/id_ed25519
+  sudo -u relay ssh "$ta@$kt" "echo -e '$MSG' > index"
+  sudo userdel -r relay
+}
+
+. /root/util.sh # {{{1
+
+# Start sshd {{{1
 log $(service ssh start)
+
+# Create accounts tophub, relay, then connect to relay@tophub and delete account relay {{{1
+MSG='# authorized keys'
+add_account tophub 'Can clone accounts to other hubs'
+#relay
+
+# Wait to stop the container {{{1
 read < /shared/host.fifo
 log '+ stopping...'
