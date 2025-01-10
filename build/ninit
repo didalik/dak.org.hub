@@ -33,21 +33,25 @@ log () { # to /shared/out {{{1
 relay () { # create account relay, connect to relay@tophub and delete the account {{{1
   cd /root/relay/.ssh; base64 -d id_ed25519.base64 > id_ed25519; cd ../..
   add_account relay 'Connects to tophub and dies'
-  ssh-keyscan $kt 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts > /dev/null
+  ssh-keyscan $TOPHUB 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts > /dev/null
+  cat /home/relay/.ssh/known_hosts >> /shared/out
   rm relay/.ssh/id_ed25519
-  sudo -u relay ssh "$ta@$kt" "echo -e '$MSG' > index"
+  sudo -u relay ssh relay@$TOPHUB "echo -e '$MSG' > index"
   sudo userdel -r relay
 }
 
 . /root/util.sh # {{{1
+. /shared/.env
+log ACCESS_JWT $ACCESS_JWT TOPHUB $TOPHUB TOPHUB_PK $TOPHUB_PK
 
 # Start sshd {{{1
-log $(service ssh start)
+service ssh start >> /shared/out
 
 # Create accounts tophub, relay, then connect to relay@tophub and delete account relay {{{1
 MSG='# authorized keys'
 add_account tophub 'Can clone accounts to other hubs'
-#relay
+echo "$TOPHUB_PK" | sudo -u tophub tee -a /home/tophub/.ssh/authorized_keys > /dev/null
+relay
 
 # Wait to stop the container {{{1
 read < /shared/host.fifo
