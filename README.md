@@ -71,9 +71,9 @@ The following sequence diagram has more:
        | setup tophub using access JWT             |                        |
        |------------------------------------------>|                        |
                                                                             |
-+------------+                             +---------------+                |
-| tophub@hub |                             | tophub@tophub |                |
-+------------+                             +---------------+                |
++------------+                             +--------------+                 |
+| tophub@hub |                             | index@tophub |                 |
++------------+                             +--------------+                 |
        |                                           | verify access JWT      |
        |                                           |----------------------->|
        |                            complete setup |
