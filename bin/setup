@@ -69,7 +69,7 @@ validate_args () { # {{{1
 
   if [ "$1" = 'qahub' ]; then
     TOPHUB='m1'
-    TOPHUB_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local'
+    TOPHUB_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local' # FIXME
     return 0;
   fi
   local ifs="$IFS"
