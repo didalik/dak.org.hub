@@ -67,8 +67,6 @@ validate_args () { # {{{1
   out "+ $0 started on $(date) with $# args: $@"
   out "+ PWD $PWD"
 
-  return
-
   if [ "$1" = 'qahub' ]; then
     TOPHUB='m1'
     TOPHUB_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local' # FIXME
@@ -102,16 +100,14 @@ HD
 	exit
 }
 
-## Validate args {{{1
+## Validate args, docker install, init, setup {{{1
 #
-# :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
+# Run it here with
+# :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub;tail -F build/shared/out
 ##
 . build/util.sh
 . $HOME/.ssh/.$HOSTNAME.env
 validate_args $@ || exit
-out DONE
-exit
-
 out "+ $0 $1 TOPHUB $TOPHUB" TOPHUB_PK "'$TOPHUB_PK'"
 
 docker_install

@@ -1,14 +1,31 @@
 #!/bin/bash
 
 request () { # account {{{1
+  local email=$(git config --get user.email);[ -n "$email" ] || user_unknown $1
+  local name=$(git config --get user.name);[ -n "$name" ] || user_unknown $1
+  
   local account=$1
-  local email=$(git config --get user.email)
-  local name=$(git config --get user.name)
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   local cmd="request $account $email $hubpk $name"
   cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
   #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
   ssh $AUTH_ACCOUNT "$cmd" # TODO https://hx.didalik.workers.dev/sendauth/request
+}
+
+user_unknown () { # authorization {{{1
+  printc 'red bold' "+ bin/sendauth request $1: user_unknown" >&2
+  cat >&2 << HD
+
+Please complete your initial git setup and introduce yourself as follows:
+
+git config --global user.name "FirstName LastName"
+git config --global user.email name@domain.org
+
+See also:
+- https://www.ipfire.org/docs/devel/git/setup
+
+HD
+  exit 1
 }
 
 validate_args () { # authorization {{{1
@@ -32,7 +49,7 @@ validate_hub () { # on approval {{{1
   read header payload64 signature
   IFS="$ifs"
   local payload="$(echo $payload64|base64 -d)"
-  #echo -e "- header $header\n- payload $payload\n- signature $signature" >&2
+  echo -e "- header $header\n- payload $payload\n- signature $signature" >&2
   local hpk=${payload#*hpk?:?} asa=${payload#*asa?:?}
   hpk="${hpk%%?,*}"; asa="${asa%%?,*}"
   out '+ validate_hub asa' $asa >&2
@@ -42,8 +59,8 @@ validate_hub () { # on approval {{{1
     return 3;
   fi
   local cmd='approval'
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
-  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
+  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
+  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NODE_BIN:$PATH $SENDAUTH '"$cmd"
   echo "$header.$payload64.$signature" | ssh $asa "$cmd"
 }
 
