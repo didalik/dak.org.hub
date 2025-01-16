@@ -9,39 +9,6 @@ conf () { # setup conf/$dir {{{1
   [ "$dir" = 'myroot' ] && fix_permissions
 }
 
-docker_init () { # initialize docker swarm as manager, create network hubnet {{{1
-  out "+ DOCKER_SWARM_IP_ADDRESS_OF_MANAGER $DOCKER_SWARM_IP_ADDRESS_OF_MANAGER"
-  docker swarm init --advertise-addr=$DOCKER_SWARM_IP_ADDRESS_OF_MANAGER 2>/dev/null
-  [ "$(docker network ls|grep hubnet|wc -l)" = 0 ] && docker network create -d overlay --attachable hubnet
-  docker network ls
-}
-
-docker_install () { # install docker engine {{{1
-  [ -e "$HOME/get-docker.sh" ] && out "+ file $HOME/get-docker.sh found" || {
-    out "+ file $HOME/get-docker.sh NOT found, installing Docker Engine..."
-    cd $HOME
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    cd -
-  }
-}
-
-docker_setup () { # build and run image {{{1
-  mkdir -p build
-  cd build
-  rm -rf shared; mkdir -p shared; mkfifo shared/host.fifo
-  cat > shared/.env << HD
-export ACCESS_JWT='$ACCESS_JWT'
-export TOPHUB='$TOPHUB'
-export TOPHUB_PK='$TOPHUB_PK'
-HD
-  local image="hubnet_$(echo $DOCKER_IMAGE_NAME_PK | tr '[:upper:]' '[:lower:]')"
-  out "- docker_setup image $image"
-  docker buildx build -t $image:latest .
-  docker run -d -v ./shared:/shared --rm --network hubnet $image
-  cd -
-}
-
 fix_permissions () { # {{{1
   sudo chown -R root:root conf/myroot
   sudo chmod -R 755 conf/myroot
@@ -90,7 +57,7 @@ validate_args () { # {{{1
   fi
 }
 
-[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # {{{1
+[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # check the env, ensure you are a sudoer {{{1
 	cat << HD
 Please provide the configuration file $HOME/.ssh/.$HOSTNAME.env - for example,
 
@@ -101,37 +68,47 @@ export WIFIPASSWD='427c867e8aaaa223d04b9e704de9c99ed313d609807ecbee6d70a136e386f
 HD
 	exit
 }
+[ -e /etc/sudoers.d/$USER ] || {
+  cat << HD
+
+Please run
+
+    echo "$USER  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER
+
+to become a sudoer.
+
+HD
+  exit
+}
+. $HOME/.ssh/.$HOSTNAME.env
+. build/util.sh
+
+sudo rm -rf conf # setup myhome, myroot; install tree {{{1
+shopt -s dotglob  # Enable hidden file expansion
+if [ ! -e "$HOME/.vimrc" ]; then
+  conf myhome
+  cp -a conf/myhome/* $HOME
+fi
+if [ -n "$WIFINAME" ]; then
+  conf myroot
+  sudo cp -a conf/myroot/* /
+fi
+[ $(which tree) ] || {
+  sudo apt install tree
+  tree $HOME -a -I .git -I .*.sw?
+}
 
 ## Validate args {{{1
 #
 # :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ##
-. build/util.sh
-. $HOME/.ssh/.$HOSTNAME.env
 validate_args $@ || exit
 out DONE
 exit
 
 out "+ $0 $1 TOPHUB $TOPHUB" TOPHUB_PK "'$TOPHUB_PK'"
 
-docker_install
-docker_init
-docker_setup
-
 # }}}1
 out DONE
 exit
 
-sudo rm -rf conf # {{{1
-shopt -s dotglob  # Enable hidden file expansion
-conf myhome
-conf myroot
-
-#rm -rf test; mkdir -p test/{home,root}
-cp -a conf/myhome/* $HOME  # test/home
-sudo cp -a conf/myroot/* / # test/root
-
-[ $(which tree) ] || sudo apt  install tree
-tree $HOME -a -I .git -I .*.sw?
-
-. $HOME/.profile
