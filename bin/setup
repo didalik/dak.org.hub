@@ -1,5 +1,26 @@
 #!/bin/bash
 
+add_account () { # {{{1
+  local user=$1 userdesc=$2
+  local hu=/home/$user
+  [ -d $hu ] && return
+
+  out "+ add_account $user $userdesc started on $(date), MSG: $MSG"
+  sudo useradd -md $hu -c "$userdesc" -s /bin/bash -k conf/$user -U $user
+  sudo -u $user [ -e $hu/.ssh/id_ed25519.base64 ] && sudo -u $user rm $hu/.ssh/id_ed25519.base64
+#  sudo -u $user [ -e $hu/.ssh/id_ed25519 ] || {
+#    sudo -u $user chmod 755 $hu
+#    sudo -u $user cd $hu/.ssh
+#    sudo -u $user ssh-keygen -t ed25519 -f id_ed25519 -P ''
+#    MSG="$MSG\n$(sudo -u $user cat id_ed25519.pub)"
+#    sudo -u $user cd -
+#    sudo -u $user chmod 750 $hu
+#  }
+#  sudo -u $user chmod 600 $hu/.ssh/id_ed25519
+  sudo -u $user chmod 700 $hu/.ssh
+  out "+ add_account exiting, MSG: $MSG"
+}
+
 conf () { # setup conf/$dir {{{1
   local dir=$1 wd=$PWD
   mkdir -p conf/$dir
@@ -16,7 +37,7 @@ fix_permissions () { # {{{1
 }
 
 tpl () { # apply templates # {{{1
-  err $1
+  out $1
   [ -d "$1" ] && { 
     cd $1
     for f in *; do
@@ -33,9 +54,10 @@ tpl () { # apply templates # {{{1
 validate_args () { # {{{1
   out "+ $0 started on $(date) with $# args: $@"
   out "+ PWD $PWD"
-
-  return
-
+  case $1 in
+    devhub|qahub|tophub) ;;
+    *) return 1;
+  esac
   if [ "$1" = 'qahub' ]; then
     TOPHUB='m1'
     TOPHUB_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local' # FIXME
@@ -46,14 +68,15 @@ validate_args () { # {{{1
   read header payload64 signature
   IFS="$ifs"
   local payload="$(echo $payload64|base64 -d)"
+  out '+ validate_args access JWT payload' $payload
   local hpk=${payload#*hpk?:?}
-  TOPHUB=${payload#*thn?:?}; TOPHUB_PK=${payload#*thpk?:?}; ACCESS_JWT="$header.$payload64.$signature"
+  TOPHUB=${payload#*thn?:?}; TOPHUB_PK=${payload#*thpk?:?} #; ACCESS_JWT="$header.$payload64.$signature"
   hpk="${hpk%%?,*}"; TOPHUB="${TOPHUB%%?,*}"; TOPHUB_PK="${TOPHUB_PK%%?,*}"
 
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   if [ "$hpk" != "$hubpk" ]; then
     printc 'red bold' "+ $0 $1 validate_args ERROR hpk '$hpk'" hubpk "'$hubpk'" >&2
-    return 3;
+    return 1;
   fi
 }
 
@@ -98,17 +121,31 @@ fi
   tree $HOME -a -I .git -I .*.sw?
 }
 
-## Validate args {{{1
+## Validate args, perform account-specific init {{{1
 #
 # :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ##
 validate_args $@ || exit
-out DONE
-exit
-
 out "+ $0 $1 TOPHUB $TOPHUB" TOPHUB_PK "'$TOPHUB_PK'"
+case $1 in
+  devhub) USER_DESCRIPTION='The dev role';;
+  qahub) USER_DESCRIPTION='QA box owner'
+    out '+ Create account tester'
+    conf tester
+    tree -a conf
+    add_account tester 'The tester role'
+    ;;
+  tophub) USER_DESCRIPTION='Can clone accounts to other hubs'
+esac
+
+## Create accounts $1, relay; connect to relay@tophub {{{1
+#
+if [ ! -d /home/$1 ]; then
+  out "+ Create account $1"
+  conf $1
+  tree -a conf
+  add_account $1 "$USER_DESCRIPTION"
+fi
 
 # }}}1
 out DONE
-exit
-
