@@ -7,7 +7,6 @@ add_account () { # {{{1
 
   out "+ add_account $user $userdesc started on $(date), MSG: $MSG"
   sudo useradd -md $hu -c "$userdesc" -s /bin/bash -k conf/$user -U $user
-  sudo -u $user [ -e $hu/.ssh/id_ed25519.base64 ] && sudo -u $user rm $hu/.ssh/id_ed25519.base64
 #  sudo -u $user [ -e $hu/.ssh/id_ed25519 ] || {
 #    sudo -u $user chmod 755 $hu
 #    sudo -u $user cd $hu/.ssh
@@ -16,8 +15,9 @@ add_account () { # {{{1
 #    sudo -u $user cd -
 #    sudo -u $user chmod 750 $hu
 #  }
-#  sudo -u $user chmod 600 $hu/.ssh/id_ed25519
-  sudo -u $user chmod 700 $hu/.ssh
+  sudo chmod -R 600 $hu/.ssh
+  sudo chmod 700 $hu/.ssh
+  #sudo -u $user chmod 750 $hu
   out "+ add_account exiting, MSG: $MSG"
 }
 
@@ -34,6 +34,15 @@ fix_permissions () { # {{{1
   sudo chown -R root:root conf/myroot
   sudo chmod -R 755 conf/myroot
   sudo chmod 600 conf/myroot/etc/netplan/*.yaml
+}
+
+relay () { # create account relay, connect to relay@tophub and delete the account {{{1
+  cd conf/relay/.ssh; base64 -d id_ed25519.base64 > id_ed25519; rm id_ed25519.base64; cd -
+  add_account relay 'Connects to tophub then dies'
+  ssh-keyscan $TOPHUB 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts
+  rm conf/relay/.ssh/id_ed25519
+  #sudo -u relay ssh relay@$TOPHUB "echo -e '$MSG' > index"
+  #sudo userdel -r relay
 }
 
 tpl () { # apply templates # {{{1
@@ -136,16 +145,18 @@ case $1 in
     add_account tester 'The tester role'
     ;;
   tophub) USER_DESCRIPTION='Can clone accounts to other hubs'
+    echo 'tophub  ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/tophub
 esac
 
-## Create accounts $1, relay; connect to relay@tophub {{{1
+## Create accounts $1, relay; connect to relay@tophub and delete the account {{{1
 #
+conf relay
 if [ ! -d /home/$1 ]; then
-  out "+ Create account $1"
   conf $1
-  tree -a conf
   add_account $1 "$USER_DESCRIPTION"
 fi
+tree -a conf
+relay
 
 # }}}1
 out DONE

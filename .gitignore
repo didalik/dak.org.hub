@@ -6,6 +6,7 @@
 build/shared
 conf/
 test/
+run.log
 
 # Node {{{1
 node_modules/
