@@ -7,14 +7,6 @@ add_account () { # {{{1
 
   out "+ add_account $user $userdesc started on $(date), MSG: $MSG"
   sudo useradd -md $hu -c "$userdesc" -s /bin/bash -k conf/$user -U $user
-#  sudo -u $user [ -e $hu/.ssh/id_ed25519 ] || {
-#    sudo -u $user chmod 755 $hu
-#    sudo -u $user cd $hu/.ssh
-#    sudo -u $user ssh-keygen -t ed25519 -f id_ed25519 -P ''
-#    MSG="$MSG\n$(sudo -u $user cat id_ed25519.pub)"
-#    sudo -u $user cd -
-#    sudo -u $user chmod 750 $hu
-#  }
   sudo chmod -R 600 $hu/.ssh
   sudo chmod 700 $hu/.ssh
   #sudo -u $user chmod 750 $hu
@@ -41,8 +33,17 @@ relay () { # create account relay, connect to relay@tophub and delete the accoun
   add_account relay 'Connects to tophub then dies'
   ssh-keyscan $TOPHUB 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts
   rm conf/relay/.ssh/id_ed25519
-  #sudo -u relay ssh relay@$TOPHUB "echo -e '$MSG' > index"
-  #sudo userdel -r relay
+
+  MSG='TODO: make use of this MSG.\\n XA! XA!'
+
+  local rpf="$HOME/relay.fifo" thout="$HOME/th.out"; rm -f $rpf $thout; mkfifo $rpf; touch $thout; chmod 666 $rpf $thout # connect to  relay@$TOPHUB with RPF:
+  echo "$MSG" > $rpf &
+  local cmd='read;read H D P T;echo -e "$REPLY\n$P" > index;cat < index"'
+  #sudo -u relay ssh -R 0:127.0.0.1:22 relay@$TOPHUB "$cmd" < $rpf 2> $rpf >> $thout
+  sudo -u relay ssh relay@$TOPHUB 'echo -e "XA\nXO XO\nXE XE" > index;echo XA;cat done|{ while read;do echo $REPLY;done; };echo XO' >> $thout 2>&1 &
+  out $? "+ relay $thout:"
+  tail -f $thout
+  sudo userdel -r relay
 }
 
 tpl () { # apply templates # {{{1
@@ -139,9 +140,7 @@ out "+ $0 $1 TOPHUB $TOPHUB" TOPHUB_PK "'$TOPHUB_PK'"
 case $1 in
   devhub) USER_DESCRIPTION='The dev role';;
   qahub) USER_DESCRIPTION='QA box owner'
-    out '+ Create account tester'
     conf tester
-    tree -a conf
     add_account tester 'The tester role'
     ;;
   tophub) USER_DESCRIPTION='Can clone accounts to other hubs'
@@ -155,8 +154,7 @@ if [ ! -d /home/$1 ]; then
   conf $1
   add_account $1 "$USER_DESCRIPTION"
 fi
-tree -a conf
+#tree -a conf
 relay
 
-# }}}1
 out DONE
