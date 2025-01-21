@@ -68,7 +68,7 @@ The following sequence diagram has more:
      |--------------------------------------------------------------------->|
                                                                             |
 +-----------+                              +--------------+                 |
-| relay@hub |                              | relay@tophub |                 |
+| relay@hub |                              |  chr@tophub  |                 |
 +-----------+                              +--------------+                 |
      |setup tophub using access JWT                |                        |
      |-------------------------------------------->|                        |
