@@ -34,15 +34,14 @@ relay () { # create account relay, connect to relay@tophub and delete the accoun
   ssh-keyscan $TOPHUB 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts
   rm conf/relay/.ssh/id_ed25519
 
-  MSG='TODO: make use of this MSG.\\n XA! XA!'
+  MSG='TODO: make use of this line.'
 
   local rpf="$HOME/relay.fifo" thout="$HOME/th.out"; rm -f $rpf $thout; mkfifo $rpf; touch $thout; chmod 666 $rpf $thout # connect to  relay@$TOPHUB with RPF:
   echo "$MSG" > $rpf &
-  local cmd='read;read H D P T;echo -e "$REPLY\n$P" > index;cat < index"'
-  #sudo -u relay ssh -R 0:127.0.0.1:22 relay@$TOPHUB "$cmd" < $rpf 2> $rpf >> $thout
-  sudo -u relay ssh relay@$TOPHUB 'echo -e "XA\nXO XO\nXE XE" > index;echo XA;cat done|{ while read;do echo $REPLY;done; };echo XO' >> $thout 2>&1 &
+  local cmd='read;read H D P T;echo -e "$REPLY\n$P" > index;echo $P;cat done'
+  sudo -u relay ssh -R 0:127.0.0.1:22 relay@$TOPHUB "$cmd" < $rpf 2> $rpf >> $thout
   out $? "+ relay $thout:"
-  tail -f $thout
+  cat $thout
   sudo userdel -r relay
 }
 
