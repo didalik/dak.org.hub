@@ -4,7 +4,7 @@ Hi there, I'm Дід Alik. I have a hobby project called [Stellar Help Exchange]
 
 Before I move the website to production and connect it to Stellar public network, I want to setup a cloud-based environment to simulate Stellar HEX users globally. To join it, clone this repo to your Ubuntu 24.04 LTS server and set it up there. The **Дід Alik & the Kids** cloud-based organization welcomes you!
 
-Your box can support QA `tester`s only (a `qahub`), `developer`s only (a `devhub`), or both (a `tophub`). During its setup, it connects to an existing top hub to clone the accounts you requested from our top hub to your hub.
+Your box can support QA `tester`s only (a `qahub`), `developer`s only (a `devhub`), or both (a `tophub`). During its setup, it connects to one of our `tophub`s to clone the accounts you requested from our `tophub` to your hub.
 
 ## How to set up a hub
 
@@ -24,11 +24,11 @@ cd dak.org.hub
 bin/setup qahub # OR devhub <access-token> OR tophub <access-token>
 ```
 
-This creates the `qahub` and `tester` accounts on your hub. These are regular accounts, unable to run `sudo`. This also creates another, temporary, regular account called `relay`. This account effectively passes your IP address to one of our existing top hubs and gets deleted right after.
+This creates the `qa` and `tester` accounts on your hub. These are regular accounts, unable to run `sudo`. This also creates another, temporary, regular account called `relay`. This account effectively passes your IP address to our `tophub` and gets deleted right after.
 
-As soon as our top hub gets your IP address, it connects to `qahub` account on your box and completes the setup. The whole thing takes less than a minute to complete.
+As soon as our `tophub` gets your IP address, it connects to `qa` account on your box and completes the setup. The whole thing takes less than a minute to complete.
 
-You are now hosting yet another QA hub for us. Get paid!
+You are now hosting yet another `qahub` for us. Get paid!
 
 ## How to get paid
 
@@ -49,7 +49,9 @@ bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 to:
 
 - request approval for the `tophub` support; and
-- get and use your access token to setup the `tophub` account on your box.
+- get and use your access token to setup the `index` account on your box.
+
+Your box is a `tophub` now - it can clone `qahub`s, `devhub`s and `tophub`s! Onboarding paradize!
 
 The following sequence diagram has more:
 
@@ -68,16 +70,16 @@ The following sequence diagram has more:
 +-----------+                              +--------------+                 |
 | relay@hub |                              | relay@tophub |                 |
 +-----------+                              +--------------+                 |
-       | setup tophub using access JWT             |                        |
-       |------------------------------------------>|                        |
+     |setup tophub using access JWT                |                        |
+     |-------------------------------------------->|                        |
                                                                             |
-+------------+                             +--------------+                 |
-| tophub@hub |                             | index@tophub |                 |
-+------------+                             +--------------+                 |
-       |                                           | verify access JWT      |
-       |                                           |----------------------->|
-       |                            complete setup |
-       |<------------------------------------------|
++-----------+                              +--------------+                 |
+| index@hub |                              | index@tophub |                 |
++-----------+                              +--------------+                 |
+     |                                             | verify access JWT      |
+     |                                             |----------------------->|
+     |                              complete setup |
+     |<--------------------------------------------|
 ```
 
 ## Contributors
