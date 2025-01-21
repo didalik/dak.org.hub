@@ -64,7 +64,7 @@ The following sequence diagram has more:
      |                                                          +----------------------+
      |                                                          | authorization server |
      |                                                          +----------------------+
-     | send approval JWT - returns access JWT for tophub@tophub             |
+     | send approval JWT - returns access JWT for index@tophub              |
      |--------------------------------------------------------------------->|
                                                                             |
 +-----------+                              +--------------+                 |
