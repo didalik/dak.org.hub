@@ -51,7 +51,7 @@ to:
 - request approval for the `tophub` support; and
 - get and use your access token to setup the `index` account on your box.
 
-Your box is a `tophub` now - it can clone `qahub`s, `devhub`s and `tophub`s! Onboarding paradize!
+Your box is a `tophub` now - it can clone `qahub`s, `devhub`s and `tophub`s. Onboarding paradize!
 
 The following sequence diagram has more:
 
