@@ -4,7 +4,7 @@ Hi there, I'm Дід Alik. I have a hobby project called [Stellar Help Exchange]
 
 Before I move the website to production and connect it to Stellar public network, I want to setup a cloud-based environment to simulate Stellar HEX users globally. To join it, clone this repo to your Ubuntu 24.04 LTS server and set it up there. The **Дід Alik & the Kids** cloud-based organization welcomes you!
 
-Your box can support QA `tester`s only (a `qahub`), `developer`s only (a `devhub`), or both (a `tophub`). During its setup, it connects to one of our `tophub`s to clone the accounts you requested from our `tophub` to your hub.
+Your box can support QA `tester`s only (a `qahub`), `dev`s only (a `devhub`), or both (a `tophub`). During its setup, it connects to one of our `tophub`s to clone the accounts you requested from our `tophub` to your hub.
 
 ## How to set up a hub
 
