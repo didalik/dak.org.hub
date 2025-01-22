@@ -141,6 +141,7 @@ case $1 in
   qahub) conf qa; add_account qa 'QA box owner'
     conf tester; add_account tester 'The tester role';;
   tophub) export INDEX_PK
+    [ -d /home/index ] && sudo userdel -r index
     conf index; add_account index 'Can clone accounts to other hubs'
     [ -e /etc/sudoers.d/index ] || echo 'index ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/index
 esac
