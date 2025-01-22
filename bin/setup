@@ -28,7 +28,7 @@ fix_permissions () { # {{{1
   sudo chmod 600 conf/myroot/etc/netplan/*.yaml
 }
 
-relay () { # create account relay, connect to relay@tophub and delete the account {{{1
+relay () { # create account relay, connect to relay@tophub, then delete the account {{{1
   cd conf/relay/.ssh; base64 -d id_ed25519.base64 > id_ed25519; rm id_ed25519.base64; cd -
   add_account relay 'Connects to tophub then dies'
   ssh-keyscan $TOPHUB 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts
@@ -54,7 +54,7 @@ tpl () { # apply templates # {{{1
     done
     return
   }
-  envsubst '$WIFINAME $WIFIPASSWD' < $f > $f.out; mv $f.out $f # see also:
+  envsubst '$INDEX_PK $WIFINAME $WIFIPASSWD' < $f > $f.out; mv $f.out $f # see also:
   # - https://superuser.com/questions/1148950/what-is-shell-format-in-envsubst
   ##
   cat $f
@@ -69,7 +69,7 @@ validate_args () { # {{{1
   esac
   if [ "$1" = 'qahub' ]; then
     TOPHUB='m1'
-    TOPHUB_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local' # FIXME
+    INDEX_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local' # FIXME
     return 0;
   fi
   local ifs="$IFS"
@@ -79,8 +79,8 @@ validate_args () { # {{{1
   local payload="$(echo $payload64|base64 -d)"
   out '+ validate_args access JWT payload' $payload
   local hpk=${payload#*hpk?:?}
-  TOPHUB=${payload#*thn?:?}; TOPHUB_PK=${payload#*thpk?:?} #; ACCESS_JWT="$header.$payload64.$signature"
-  hpk="${hpk%%?,*}"; TOPHUB="${TOPHUB%%?,*}"; TOPHUB_PK="${TOPHUB_PK%%?,*}"
+  TOPHUB=${payload#*thn?:?}; INDEX_PK=${payload#*ipk?:?} #; ACCESS_JWT="$header.$payload64.$signature"
+  hpk="${hpk%%?,*}"; TOPHUB="${TOPHUB%%?,*}"; INDEX_PK="${INDEX_PK%%?,*}"
 
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   if [ "$hpk" != "$hubpk" ]; then
@@ -89,8 +89,8 @@ validate_args () { # {{{1
   fi
 }
 
-[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # check the env, ensure you are a sudoer {{{1
-	cat << HD
+[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # check the env, ensure you are a sudoer, load stuff {{{1
+	cat << HD # sample env {{{2
 Please provide the configuration file $HOME/.ssh/.$HOSTNAME.env - for example,
 
 export AUTH_ACCOUNT='alik@u22' # authorization server account
@@ -100,7 +100,7 @@ export WIFIPASSWD='427c867e8aaaa223d04b9e704de9c99ed313d609807ecbee6d70a136e386f
 HD
 	exit
 }
-[ -e /etc/sudoers.d/$USER ] || {
+[ -e /etc/sudoers.d/$USER ] || { # be a sudoer! {{{2
   cat << HD
 
 Please run
@@ -111,7 +111,7 @@ to become a sudoer.
 
 HD
   exit
-}
+} # }}}2
 . $HOME/.ssh/.$HOSTNAME.env
 . build/util.sh
 
@@ -130,30 +130,24 @@ fi
   tree $HOME -a -I .git -I .*.sw?
 }
 
-## Validate args, perform account-specific init {{{1
+## Validate args, perform host-specific init {{{1
 #
 # :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ##
 validate_args $@ || exit
-out "+ $0 $1 TOPHUB $TOPHUB" TOPHUB_PK "'$TOPHUB_PK'"
+out "+ $0 $1 TOPHUB $TOPHUB" INDEX_PK "'$INDEX_PK'"
 case $1 in
-  devhub) USER_DESCRIPTION='The dev role';;
-  qahub) USER_DESCRIPTION='QA box owner'
-    conf tester
-    add_account tester 'The tester role'
-    ;;
-  tophub) USER_DESCRIPTION='Can clone accounts to other hubs'
-    echo 'tophub  ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/tophub
+  devhub) conf dev; add_account dev 'The dev role';;
+  qahub) conf qa; add_account qa 'QA box owner'
+    conf tester; add_account tester 'The tester role';;
+  tophub) export INDEX_PK
+    conf index; add_account index 'Can clone accounts to other hubs'
+    [ -e /etc/sudoers.d/index ] || echo 'index ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/index
 esac
 
-## Create accounts $1, relay; connect to relay@tophub and delete the account {{{1
+## Create account relay; connect to chr@tophub to complete setup, then delete the account {{{1
 #
 conf relay
-if [ ! -d /home/$1 ]; then
-  conf $1
-  add_account $1 "$USER_DESCRIPTION"
-fi
-#tree -a conf
 relay
 
 out DONE
