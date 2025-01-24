@@ -89,7 +89,7 @@ validate_args () { # {{{1
   fi
 }
 
-[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # check the env, ensure you are a sudoer, load stuff {{{1
+[ -e $HOME/.ssh/.$HOSTNAME.env ] || { # check the env, load stuff, ensure you are a sudoer {{{1
 	cat << HD # sample env {{{2
 Please provide the configuration file $HOME/.ssh/.$HOSTNAME.env - for example,
 
@@ -99,8 +99,10 @@ export WIFIPASSWD='427c867e8aaaa223d04b9e704de9c99ed313d609807ecbee6d70a136e386f
 
 HD
 	exit
-}
-[ -e /etc/sudoers.d/$USER ] || { # be a sudoer! {{{2
+} # }}}2
+. $HOME/.ssh/.$HOSTNAME.env
+. build/util.sh
+found sudo "$(groups)" || { # be a sudoer! {{{2
   cat << HD
 
 Please run
@@ -112,8 +114,6 @@ to become a sudoer.
 HD
   exit
 } # }}}2
-. $HOME/.ssh/.$HOSTNAME.env
-. build/util.sh
 
 sudo rm -rf conf # setup myhome, myroot; install tree {{{1
 shopt -s dotglob  # Enable hidden file expansion

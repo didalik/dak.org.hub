@@ -31,6 +31,10 @@ err () { # {{{1
   printc 'red dim' $@
 }
 
+found () { # {{{1
+  [ "${2#*$1}" != "$2" ]
+}
+
 install_node () { # {{{1
   cp $HOME/.bashrc $HOME/.bashrc-saved
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
