@@ -38,8 +38,8 @@ relay () { # create account relay, connect to relay@tophub, then delete the acco
 
   local rpf="$HOME/relay.fifo" thout="$HOME/th.out"; rm -f $rpf $thout; mkfifo $rpf; touch $thout; chmod 666 $rpf $thout # connect to  relay@$TOPHUB with RPF:
   echo "$MSG" > $rpf &
-  local cmd='read;read H D P T;echo -e "$REPLY\n$P" > index;echo $P;cat done'
-  sudo -u relay ssh -R 0:127.0.0.1:22 relay@$TOPHUB "$cmd" < $rpf 2> $rpf >> $thout
+  local cmd='read;read H D P T;echo -e "$REPLY\n$P" > index;echo $P;cat out'
+  sudo -u relay ssh -R 0:127.0.0.1:22 chr@$TOPHUB "$cmd" < $rpf 2> $rpf >> $thout
   out $? "+ relay $thout:"
   cat $thout
   sudo userdel -r relay
