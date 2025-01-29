@@ -9,7 +9,6 @@ add_account () { # {{{1
   sudo useradd -md $hu -c "$userdesc" -s /bin/bash -k conf/$user -U $user
   sudo chmod -R 600 $hu/.ssh
   sudo chmod 700 $hu/.ssh
-  #sudo -u $user chmod 750 $hu
   out "+ add_account exiting, MSG: $MSG"
 }
 
@@ -135,15 +134,20 @@ fi
 # :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ##
 validate_args $@ || exit
-out "+ $0 $1 TOPHUB $TOPHUB" INDEX_PK "'$INDEX_PK'"
+out "+ $0 $1 TOPHUB $TOPHUB" INDEX_PK "'$INDEX_PK'" HOSTNAME $HOSTNAME
 case $1 in
-  devhub) conf dev; add_account dev 'The dev role';;
+  devhub) conf dev; add_account dev 'The dev role';; # TODO complete
   qahub) conf qa; add_account qa 'QA box owner'
-    conf tester; add_account tester 'The tester role';;
+    conf tester; add_account tester 'The tester role';; # TODO complete
   tophub) export INDEX_PK
-    [ -d /home/index ] && sudo userdel -r index
-    conf index; add_account index 'Can clone accounts to other hubs'
-    [ -e /etc/sudoers.d/index ] || echo 'index ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/index
+    systemctl list-units --type=service | grep tophub.clone.service && sudo systemctl stop tophub.clone.service # if tophub.clone.service is on, stop it
+    sudo userdel -r index                                               # reset account index
+    conf index; add_account index 'Maintains known hubs and their accounts'
+    echo "export AUTH_ACCOUNT='alik@u22' # authorization server account" | sudo tee /home/index/.ssh/.$HOSTNAME.env
+    echo 'index ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/index # make account index a sudoer
+    sudo usermod -aG adm,sudo index                                     # give account index access to /var/log/auth.log
+    sudo -u index sh -c 'cd /home/index;git clone https://github.com/didalik/dak.org.hub.git'
+    echo "$INDEX_PK" | sudo tee /home/index/.ssh/authorized_keys
 esac
 
 ## Create account relay; connect to chr@tophub to complete setup, then delete the account {{{1
