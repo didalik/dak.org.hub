@@ -6,7 +6,7 @@ Before I move the website to production and connect it to Stellar public network
 
 Your box can support QA `tester`s only (a `qahub`), `dev`s only (a `devhub`), or both (a `tophub`). During its setup, it connects to one of our `tophub`s to clone the accounts you requested from our `tophub` to your hub.
 
-## How to set up a hub
+## How to set up a qahub
 
 To create an account on your server, you have to be a sudoer. A sudoer does not have to enter a password to execute a `sudo` command. For example, on my box I have account `alik`. To make `alik` a sudoer, I run:
 
