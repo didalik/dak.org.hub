@@ -49,6 +49,8 @@ Add the following line
 to your `/etc/hosts` file. It holds the IP address of our authorization server. We use [OAuth](https://www.ionos.com/digitalguide/server/security/oauth/) to give you a [JWT](https://www.ionos.com/digitalguide/websites/web-development/json-web-token-jwt/) access token. Run
 
 ```
+echo "export AUTH_ACCOUNT='alik@u22' # authorization server account" > $HOME/.ssh/.$HOSTNAME.env
+cd $HOME/dak.org.hub # your clone of this repo
 bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ```
 
