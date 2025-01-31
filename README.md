@@ -38,9 +38,15 @@ I shall pay you **HEXA 1000** for hosting a QA hub for us. It doesn't have to be
 
 ### Getting paid for QA hub usage
 
-## How to obtain and use an [access token](https://www.ionos.com/digitalguide/server/security/oauth/ "TODO implement")
+## How to set up a tophub
 
-Run
+Add the following line
+
+```
+192.168.0.199   u22     # alik
+```
+
+to your `/etc/hosts` file. It holds the IP address of our authorization server. We use [OAuth](https://www.ionos.com/digitalguide/server/security/oauth/) to give you a [JWT](https://www.ionos.com/digitalguide/websites/web-development/json-web-token-jwt/) access token. Run
 
 ```
 bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
