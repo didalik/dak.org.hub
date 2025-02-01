@@ -137,7 +137,8 @@ validate_args $@ || exit
 out "+ $0 $1 TOPHUB $TOPHUB" INDEX_PK "'$INDEX_PK'" HOSTNAME $HOSTNAME
 case $1 in
   devhub) conf dev; add_account dev 'The dev role';; # TODO complete
-  qahub) conf qa; add_account qa 'QA box owner'
+  qahub)
+    conf qa; add_account qa 'QA box owner'
     conf tester; add_account tester 'The tester role';; # TODO complete
   tophub) export INDEX_PK
     systemctl list-units --type=service | grep tophub.clone.service && sudo systemctl stop tophub.clone.service # if tophub.clone.service is on, stop it
