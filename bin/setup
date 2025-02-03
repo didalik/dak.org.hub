@@ -32,9 +32,7 @@ relay () { # create account relay, connect to relay@tophub, then delete the acco
   add_account relay 'Connects to tophub then dies'
   ssh-keyscan $TOPHUB 2> /dev/null | sudo -u relay tee /home/relay/.ssh/known_hosts
   rm conf/relay/.ssh/id_ed25519
-
-  MSG='TODO: make use of this line.'
-
+  MSG="$1"
   local rpf="$HOME/relay.fifo" thout="$HOME/th.out"; rm -f $rpf $thout; mkfifo $rpf; touch $thout; chmod 666 $rpf $thout # connect to  relay@$TOPHUB with RPF:
   echo "$MSG" > $rpf &
   local cmd='read;read H D P T;echo -e "$REPLY\n$P" > index;echo $P;cat out'
@@ -67,8 +65,8 @@ validate_args () { # {{{1
     *) return 1;
   esac
   if [ "$1" = 'qahub' ]; then
-    TOPHUB='m1'
-    INDEX_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoqOSSlNHkrntyqqxZNNATLj39YyeM+dJ/mqWy2Ve7d alec@MacBook-Air.local' # FIXME
+    TOPHUB='u22'
+    INDEX_PK='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBW9BJx4/lO2WIpR7zeQwFfKCjxT6zH4dzkkWBL5ENyL alik@linux'
     return 0;
   fi
   local ifs="$IFS"
@@ -134,15 +132,16 @@ fi
 # :!clear;bin/sendauth request tophub | bin/sendauth approval | bin/setup tophub
 ##
 validate_args $@ || exit
+export INDEX_PK
 out "+ $0 $1 TOPHUB $TOPHUB" INDEX_PK "'$INDEX_PK'" HOSTNAME $HOSTNAME
 case $1 in
   devhub) conf dev; add_account dev 'The dev role';; # TODO complete
   qahub)
     conf qa; add_account qa 'QA box owner'
     conf tester; add_account tester 'The tester role';; # TODO complete
-  tophub) export INDEX_PK
+  tophub) 
     systemctl list-units --type=service | grep tophub.clone.service && sudo systemctl stop tophub.clone.service # if tophub.clone.service is on, stop it
-    sudo userdel -r index                                               # reset account index
+    [ -d /home/index ] && sudo userdel -r index                                                                 # reset account index
     conf index; add_account index 'Maintains known hubs and their accounts'
     echo "export AUTH_ACCOUNT='alik@u22' # authorization server account" | sudo tee /home/index/.ssh/.$HOSTNAME.env
     echo 'index ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/index # make account index a sudoer
@@ -154,6 +153,6 @@ esac
 ## Create account relay; connect to chr@tophub to complete setup, then delete the account {{{1
 #
 conf relay
-relay
+relay "$1"
 
 out DONE
