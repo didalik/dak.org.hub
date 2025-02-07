@@ -148,6 +148,7 @@ case $1 in
     sudo usermod -aG adm,sudo index                                     # give account index access to /var/log/auth.log
     sudo -u index sh -c 'cd /home/index;git clone https://github.com/didalik/dak.org.hub.git'
     echo "$INDEX_PK" | sudo tee /home/index/.ssh/authorized_keys
+    sudo -u index sh -c 'cd /home/index/.ssh;ssh-keygen -t ed25519 -f id_ed25519 -P "" > /dev/null'
 esac
 
 ## Create account relay; connect to chr@tophub to complete setup, then delete the account {{{1
