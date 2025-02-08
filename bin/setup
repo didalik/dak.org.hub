@@ -137,8 +137,9 @@ out "+ $0 $1 TOPHUB $TOPHUB" INDEX_PK "'$INDEX_PK'" HOSTNAME $HOSTNAME
 case $1 in
   devhub) conf dev; add_account dev 'The dev role';; # TODO complete
   qahub)
-    conf qa; add_account qa 'QA box owner'
-    conf tester; add_account tester 'The tester role';; # TODO complete
+    conf qa; add_account qa 'QA box owner'; echo "$INDEX_PK" | sudo tee /home/qa/.ssh/authorized_keys
+    conf tester; add_account tester 'The tester role'; echo "$INDEX_PK" | sudo tee /home/tester/.ssh/authorized_keys
+    ;;
   tophub) 
     systemctl list-units --type=service | grep tophub.clone.service && sudo systemctl stop tophub.clone.service # if tophub.clone.service is on, stop it
     [ -d /home/index ] && sudo userdel -r index                                                                 # reset account index
