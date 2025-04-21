@@ -2,7 +2,7 @@
 
 Hi there, I'm Дід Alik. I have a hobby project called [Stellar Help Exchange](https://github.com/amissine/shex/blob/main/README.md#presentation "Stellar hX, work in progress"). Presently, it passes all the integration tests locally. In these tests, the project's website interacts with Stellar hX users - simulated locally - via [Stellar](https://stellar.org/) testnet.
 
-Before I move the website to production and connect it to Stellar public network, I want to setup a cloud-based environment to simulate Stellar HEX users globally. To join it, clone this repo to your Ubuntu 24.04 LTS server and set it up there. The **Дід Alik & the Kids** cloud-based organization welcomes you!
+Before I move the website to production and connect it to Stellar public network, I want to setup a cloud-based environment to simulate Stellar hX users globally. To join it, clone this repo to your Ubuntu 24.04 LTS server and set it up there. The **Дід Alik & the Kids** cloud-based organization welcomes you!
 
 Your box can support QA `tester`s only (a `qahub`), `dev`s only (a `devhub`), or both (a `tophub`). During its setup, it connects to one of our `tophub`s to clone the accounts you requested from our `tophub` to your hub.
 
