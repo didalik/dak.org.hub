@@ -64,13 +64,13 @@ Your box is a `tophub` now - it can clone `qahub`s, `devhub`s and `tophub`s. Onb
 The following sequence diagram has more:
 
 ```
-+---------+                          +-------------------------------------------------+
-| you@hub |                          | https://hx.didalik.workers.dev/sendauth/request |
-+---------+                          +-------------------------------------------------+
-     | request tophub - returns approval JWT                |
++---------+                         +--------------------------------------------------+
+| you@hub |                         | https://kot.didalik.workers.dev/sendauth/request |
++---------+                         +--------------------------------------------------+
+     | TODO    request tophub - returns approval JWT        |
      |----------------------------------------------------->|
-     |                                                          +----------------------+
-     |                                                          | authorization server |
+     | FOR NOW request tophub - returns approval JWT            +----------------------+
+     |--------------------------------------------------------->| authorization server |
      |                                                          +----------------------+
      | send approval JWT - returns access JWT for index@tophub              |
      |--------------------------------------------------------------------->|
