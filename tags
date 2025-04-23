@@ -1,0 +1,34 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+add_account	bin/setup	/^add_account () { # {{{1$/;"	f
+add_account	build/ninit	/^add_account () { # {{{1$/;"	f
+conf	bin/setup	/^conf () { # setup conf\/$dir {{{1$/;"	f
+conf	bin/setup-docker-swarm	/^conf () { # setup conf\/$dir {{{1$/;"	f
+docker_init	bin/setup-docker-swarm	/^docker_init () { # initialize docker swarm as manager, create network hubnet {{{1$/;"	f
+docker_install	bin/setup-docker-swarm	/^docker_install () { # install docker engine {{{1$/;"	f
+docker_setup	bin/setup-docker-swarm	/^docker_setup () { # build and run image {{{1$/;"	f
+envgetkv	build/util.sh	/^envgetkv () { # trimming the expected quotes around the value {{{1$/;"	f
+envputkv	build/util.sh	/^envputkv () { # NO lines with duplicate keys {{{1$/;"	f
+envsetup	build/util.sh	/^envsetup () { # {{{1$/;"	f
+err	build/util.sh	/^err () { # {{{1$/;"	f
+fix_permissions	bin/setup	/^fix_permissions () { # {{{1$/;"	f
+fix_permissions	bin/setup-docker-swarm	/^fix_permissions () { # {{{1$/;"	f
+found	build/util.sh	/^found () { # {{{1$/;"	f
+install_node	build/util.sh	/^install_node () { # {{{1$/;"	f
+log	build/ninit	/^log () { # to \/shared\/out {{{1$/;"	f
+out	build/util.sh	/^out () { # {{{1$/;"	f
+printc	build/util.sh	/^printc () { # {{{1$/;"	f
+relay	bin/setup	/^relay () { # create account relay, connect to relay@tophub, then delete the account {{{1$/;"	f
+relay	build/ninit	/^relay () { # create account relay, connect to relay@tophub and delete the account {{{1$/;"	f
+request	bin/sendauth	/^request () { # account {{{1$/;"	f
+tpl	bin/setup	/^tpl () { # apply templates # {{{1$/;"	f
+tpl	bin/setup-docker-swarm	/^tpl () { # apply templates # {{{1$/;"	f
+user_unknown	bin/sendauth	/^user_unknown () { # authorization {{{1$/;"	f
+validate_args	bin/sendauth	/^validate_args () { # authorization {{{1$/;"	f
+validate_args	bin/setup	/^validate_args () { # {{{1$/;"	f
+validate_args	bin/setup-docker-swarm	/^validate_args () { # {{{1$/;"	f
+validate_hub	bin/sendauth	/^validate_hub () { # on approval {{{1$/;"	f
