@@ -6,9 +6,9 @@ request () { # account {{{1
   
   local account=$1
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
-  local cmd="request $account $email $hubpk $name"
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
-  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH '"$cmd"
+  local cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH'
+  cmd="$cmd request $account $email $hubpk $name 2>/dev/null"
+  #cmd="$cmd request $account $email $hubpk $name"
   ssh $AUTH_ACCOUNT "$cmd" # TODO https://kot.didalik.workers.dev/sendauth/request
 }
 
@@ -29,7 +29,7 @@ HD
 }
 
 validate_args () { # authorization {{{1
-  err "+ $0 started on $(date) with $# args: $@" >&2
+  err "+ $HOSTNAME $0 started on $(date) with $# args: $@" >&2
   local auth=$1 account=$2
   case $auth in
     request)
@@ -58,9 +58,9 @@ validate_hub () { # on approval {{{1
     printc 'red bold' '+ validate_hub ERROR' hpk "'$hpk'" hubpk "'$hubpk'" >&2
     return 3;
   fi
-  local cmd='approval'
-  cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH '"$cmd 2>/dev/null"
-  #cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH '"$cmd"
+  local cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH'
+  cmd="$cmd approval 2>/dev/null"
+  #cmd="$cmd approval"
   echo "$header.$payload64.$signature" | ssh $asa "$cmd"
 }
 
