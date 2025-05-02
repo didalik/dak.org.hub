@@ -51,7 +51,9 @@ validate_hub () { # on approval {{{1
   IFS="$ifs"
   local payload="$(echo $payload64|base64 -d)"
   #out '+ bin/sendauth validate_hub:' >&2
-  echo -e "- header $header\n- payload $payload\n- signature $signature" >&2
+  #echo -e "- header $header\n- payload $payload\n- signature $signature" >&2
+  [ -z "$header" ] && return
+
   local hpk=${payload#*hpk?:?} asa=${payload#*asa?:?}
   hpk="${hpk%%?,*}"; asa="${asa%%?,*}"
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
