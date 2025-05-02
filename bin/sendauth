@@ -35,7 +35,7 @@ validate_args () { # authorization {{{1
     request)
       case $kind in
         devhub|tophub) request $kind;;
-        script) return # TODO implement
+        script) return;; # TODO implement
         *) return 2
       esac;;
     approval)
