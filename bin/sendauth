@@ -1,14 +1,14 @@
 #!/bin/bash
 
-request () { # account {{{1
+request () { # kind {{{1
   local email=$(git config --get user.email);[ -n "$email" ] || user_unknown $1
   local name=$(git config --get user.name);[ -n "$name" ] || user_unknown $1
   
-  local account=$1
+  local kind=$1
   local hubpk="$(cat $HOME/.ssh/id_ed25519.pub)"
   local cmd='. $PWD/.ssh/.$HOSTNAME.env;PATH=$NVM_BIN:$PATH $SENDAUTH'
-  cmd="$cmd request $account $email $hubpk $name 2>/dev/null"
-  #cmd="$cmd request $account $email $hubpk $name"
+  cmd="$cmd request $kind $email $hubpk $name 2>/dev/null"
+  #cmd="$cmd request $kind $email $hubpk $name"
   ssh $AUTH_ACCOUNT "$cmd" # TODO https://kot.didalik.workers.dev/sendauth/request
 }
 
@@ -30,11 +30,12 @@ HD
 
 validate_args () { # authorization {{{1
   err "+ $HOSTNAME $0 started on $(date) with $# args: $@" >&2
-  local auth=$1 account=$2
+  local auth=$1 kind=$2
   case $auth in
     request)
-      case $account in
-        devhub|tophub) request $account;;
+      case $kind in
+        devhub|tophub) request $kind;;
+        script) return # TODO implement
         *) return 2
       esac;;
     approval)
