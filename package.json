@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test": "bin/script test"
+  },
   "devDependencies": {
     "node-fetch": "^3.2.3"
   },
