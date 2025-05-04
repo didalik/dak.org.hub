@@ -1,7 +1,8 @@
 #!/bin/bash
 
 script2localhost () { # SSH to localhost {{{1
-  cat $HOME/.ssh/.$HOSTNAME.env
+  cd cloner/cdci
+  npm run minify --bashscript=bin/rjob.sh; cat minified.sh
 }
 
 validate_args () { # authorization {{{1
