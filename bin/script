@@ -1,6 +1,6 @@
 #!/bin/bash
 
-script_localhost () { # SSH to localhost {{{1
+script2localhost () { # SSH to localhost {{{1
   cat $HOME/.ssh/.$HOSTNAME.env
 }
 
@@ -9,7 +9,7 @@ validate_args () { # authorization {{{1
   local arg1=$1 kind=$2
   case $arg1 in
     test)
-      script_localhost;;
+      script2localhost;;
     *) return 1 # TODO run script $arg1 with RPF
   esac
 }
