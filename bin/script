@@ -2,11 +2,13 @@
 
 script2localhost () { # SSH to localhost {{{1
   cd cloner/cdci
-  npm run minify --bashscript=bin/rjob.sh; cat minified.sh
+  npm run minify --bashscript=bin/rjob.sh # producing one-liner minified.sh
+  #cat minified.sh
+  rpfin alik@127.0.0.1 minified.sh rjob
 }
 
 validate_args () { # authorization {{{1
-  err "+ $HOSTNAME $0 started on $(date) with $# args: $@" >&2
+  err "+ $USER@$HOSTNAME $0 started in $PWD on $(date) with $# args: $@" >&2
   local arg1=$1 kind=$2
   case $arg1 in
     test)
@@ -17,7 +19,7 @@ validate_args () { # authorization {{{1
 
 # }}}1
 
-. build/util.sh
+. cloner/lib/util.sh
 . $HOME/.ssh/.$HOSTNAME.env
 
 validate_args $@ || exit
